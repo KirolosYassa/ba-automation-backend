@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "https://my-firebase-app.web.app"
+    "https://ba-automation-5a4ae.web.app/"
 ]
 
 app.add_middleware(
