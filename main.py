@@ -3,6 +3,11 @@ from fastapi import FastAPI, Path
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+
+
+
+
+
 app = FastAPI()
 
 origins = [
