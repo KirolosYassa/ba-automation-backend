@@ -1,13 +1,12 @@
 import os
 import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-from firebase_admin import storage
+from firebase_admin import credentials, storage, firestore, auth
+ 
 
 cred = credentials.Certificate(os.path.dirname(__file__) + "/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 firestore_client = firestore.client()
-
+# auth = firebase_admin.auth()
 
 db = firestore.client()
 
@@ -24,6 +23,13 @@ db = firestore.client()
 
 # print(f'Added document with id {new_city_ref.id}')
 
+
+def log_in(email, password):
+    response = auth.sign_in_with_email_and_password(email=email, password=password)
+    # link = auth.generate_sign_in_with_email_link(email=email, action_code_settings=None)
+    return response
+    
+
 def get_all_users():
     docs = db.collection("users").get()
 
@@ -36,7 +42,6 @@ def get_all_users():
         "first_name": user["first_name"],
         "last_name": user["last_name"],
         "email": user["email"], 
-        "password": user["password"],
         "role": user["role"],
         }
         all_users[doc.id] = user_info
@@ -51,9 +56,18 @@ def add_user(user_data):
         "last_name": user_data["last_name"],
         "email": user_data["email"],
         "role": user_data["role"],
-        "password": user_data["password"]
         }
-    db.collection("users").add(data)
+    # Add the user to the AuthenticationManager
+    try:
+        u = auth.create_user(email=user_data["email"], password=user_data["password"])
+    except ValueError:
+        return "Password must be more than or equal to 6 characters"
+    except firebase_admin._auth_utils.EmailAlreadyExistsError:
+        return "UserAlreadyExists"
+
+    # Add the user to Cloud firestore
+    db.collection("users").document(u.uid).set(data)
+    return "User Added"
 
 
 def get_user(user_id):

@@ -44,11 +44,44 @@ def signup(user: User):
             "password": user.password,
             "role": user.role,
         }
-        print(user_data)
-        add_user(user_data)
+        # print(user_data)
+        response = add_user(user_data)
+        if response == "UserAlreadyExists":
+            print("User already exists")
+            return "UserAlreadyExists"
+        else:
+            print(response)
+            return response
     except HTTPException:
         print("Format is not right!")
     return True
+# kirolosyassa2017@gmail.com
+# 333333
+@app.post("/login")
+def logIn(user: User):
+        user_data = {
+        # "first_name": "",
+        # "last_name": "",
+        "email": user.email, 
+        "password": user.password,
+        # "role": "",
+        }
+
+    # try:
+        response = log_in(email=user_data["email"], password=user_data["password"])
+        # print(user_data)
+        # response = add_user(user_data)
+        # if response == "UserAlreadyExists":
+        #     print("User already exists")
+        #     return "UserAlreadyExists"
+        # else:
+        #     print(response)
+        #     return response
+    # except HTTPException:
+        # print("Format is not right!")
+        # return True
+        print(response)
+        return response
 
 
 @app.get("/users")
