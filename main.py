@@ -32,13 +32,59 @@ class User(BaseModel):
     email: str
     role: str
     password: str
+    
+class Project(BaseModel):
+    user_id: str
+    name: str
+    description: str
 
 
+# Add project for specific user with his/her user_id
+@app.post("/addproject")
+async def add_project(project: Project):
+    project_data = {
+        "user_id": project.user_id,
+        "name": project.name,
+        "description": project.description, 
+    }
+    print("add_project is activated!")
+    print(f"user id in add_project backend = {project.user_id}")
+    response = add_project_by_user_id(project_data)
+    print(response)
+    return response
+
+
+# Get from MyProfile Page to display all projects of a single user
 @app.get("/projects")
 async def get_user_projects(user_id: str):
     print("get_user_projects is activated!")
     print(f"user id in get_user_projects backend = {user_id}")
     data = get_subcollection_projects(user_id)
+    print(data)
+    return {"data": data}
+
+
+# Get from Single Page to display specific project of a single user
+@app.get("/single_project")
+async def get_project(user_id: str, project_id: str):
+    # print(query)
+    # query = query.split("/")
+    # user_id = query[0]
+    # project_id = query[2]
+    print("get_project is activated!")
+    print(f"user id in get_project backend = {user_id}")
+    print(f"project_id id in get_project backend = {project_id}")
+    data = get_specific_project(user_id, project_id)
+    print(data)
+    return {"data": data}
+
+# Delete specific project of a single user
+@app.delete("/single_project")
+async def delete_project(user_id: str, project_id: str):
+    print("delete_project is activated!")
+    print(f"user id in delete_project backend = {user_id}")
+    print(f"project_id id in delete_project backend = {project_id}")
+    data = delete_specific_project(user_id, project_id)
     print(data)
     return {"data": data}
 

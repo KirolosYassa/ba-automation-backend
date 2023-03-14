@@ -126,3 +126,53 @@ def get_subcollection_projects(user_id):
             data[doc.id] = doc.to_dict()
     return data
     
+def get_specific_project(user_id, project_id):
+    
+    collections = db.collection('users').document(user_id).collections()
+    data = {}
+    for collection in collections:
+        for doc in collection.stream():
+            if doc.id == project_id:
+                data[doc.id] = doc.to_dict()
+                break
+    return data
+    
+def delete_specific_project(user_id, project_id):
+    
+    p_ref = db.collection('users').document(user_id).collection("projects").document(project_id).delete()
+    return p_ref
+    # collections = db.collection('users').document(user_id).collection("projects").document(project_id).get()
+    # data = {}
+    # for doc in collections:
+    #     if doc.id == project_id:
+    #         data = doc.to_dict()
+    #         doc.delete()
+    #         break
+    # for collection in collections:
+    #     print(collection)
+    #     for doc in collection.stream():
+    #         if doc.id == project_id:
+    #             data = doc.to_dict()
+    #             doc.delete()
+    #             break
+    return data
+
+def add_project_by_user_id(project_data):
+    data = {
+        "user_id": project_data["user_id"],
+        "name": project_data["name"],
+        "description": project_data["description"],
+        }
+    db.collection('users').document(data["user_id"]).collection('projects').add(data)
+    # update_time, project_ref = db.collection('users').document(data["user_id"]).collection('projects').add(data)
+    # print(update_time)
+    # print(project_ref)
+    # print(project_ref)
+    return "Project Added"
+    
+project_data = {
+        "user_id": "fqQRCusgnORUEKRHAqzNOqrM8nh1",
+        "name": "First Project",
+        "description": "hanet 5las aho", 
+    }
+# add_project_by_user_id(project_data)
