@@ -34,6 +34,15 @@ class User(BaseModel):
     password: str
 
 
+@app.get("/projects")
+async def get_user_projects(user_id: str):
+    print("get_user_projects is activated!")
+    print(f"user id in get_user_projects backend = {user_id}")
+    data = get_subcollection_projects(user_id)
+    print(data)
+    return {"data": data}
+
+
 @app.post("/signup")
 def signup(user: User):
     try:
@@ -57,49 +66,43 @@ def signup(user: User):
     return True
 # kirolosyassa2017@gmail.com
 # 333333
-@app.post("/login")
-def logIn(user: User):
-        user_data = {
-        # "first_name": "",
-        # "last_name": "",
-        "email": user.email, 
-        "password": user.password,
-        # "role": "",
-        }
+# @app.post("/login")
+# def logIn(user: User):
+#         user_data = {
+#         # "first_name": "",
+#         # "last_name": "",
+#         "email": user.email, 
+#         "password": user.password,
+#         # "role": "",
+#         }
 
-    # try:
-        response = log_in(email=user_data["email"], password=user_data["password"])
-        # print(user_data)
-        # response = add_user(user_data)
-        # if response == "UserAlreadyExists":
-        #     print("User already exists")
-        #     return "UserAlreadyExists"
-        # else:
-        #     print(response)
-        #     return response
-    # except HTTPException:
-        # print("Format is not right!")
-        # return True
-        print(response)
-        return response
-
-
-@app.get("/users")
-def get_users():
-    data = get_all_users()
-    return data
+#     # try:
+#         response = log_in(email=user_data["email"], password=user_data["password"])
+#         # print(user_data)
+#         # response = add_user(user_data)
+#         # if response == "UserAlreadyExists":
+#         #     print("User already exists")
+#         #     return "UserAlreadyExists"
+#         # else:
+#         #     print(response)
+#         #     return response
+#     # except HTTPException:
+#         # print("Format is not right!")
+#         # return True
+#         print(response)
+#         return response
 
 
-@app.get("/user-id")
-def get_id(email: str = None):
-    id = get_user_id(email)
-    return {"id": id}
+# @app.get("/users")
+# def get_users():
+#     data = get_all_users()
+#     return data
 
 
-@app.get("/projects")
-def get_user_projects(user_id: str):
-    data = get_user(user_id)
-    return {"data": data}
+# @app.get("/user-id")
+# def get_id(email: str = None):
+#     id = get_user_id(email)
+#     return {"id": id}
 
 
 

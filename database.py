@@ -71,10 +71,17 @@ def add_user(user_data):
 
 
 def get_user(user_id):
+    print(f"user id in get_user function = {user_id}")
     doc = db.collection("users").document(user_id).get()
     print(doc)
+    if doc.exists:
+        print(f'Document data: {doc.to_dict()}')
+    else:
+        print(u'No such document!')
+
     data = {}
     data[doc.id] = doc.to_dict()
+    print(data)
     return data
     
     
@@ -110,3 +117,12 @@ def get_user_id(email):
         user_id = doc.id
     return user_id
 # print(get_user_id("kirolosyassa2017@gmail.com"))
+
+def get_subcollection_projects(user_id):
+    collections = db.collection('users').document(user_id).collections()
+    data = {}
+    for collection in collections:
+        for doc in collection.stream():
+            data[doc.id] = doc.to_dict()
+    return data
+    
