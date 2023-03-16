@@ -37,6 +37,11 @@ class Project(BaseModel):
     user_id: str
     name: str
     description: str
+    
+class UploadedFiles(BaseModel):
+      user_id: str
+      project_: str
+      files: dict
 
 
 # Add project for specific user with his/her user_id
@@ -67,16 +72,33 @@ async def get_user_projects(user_id: str):
 # Get from Single Page to display specific project of a single user
 @app.get("/single_project")
 async def get_project(user_id: str, project_id: str):
-    # print(query)
-    # query = query.split("/")
-    # user_id = query[0]
-    # project_id = query[2]
     print("get_project is activated!")
     print(f"user id in get_project backend = {user_id}")
     print(f"project_id id in get_project backend = {project_id}")
     data = get_specific_project(user_id, project_id)
-    print(data)
+    print(f"data inside main file = {data}")
     return {"data": data}
+
+
+# Post to Single Page to save files_data_uploaded to cloud firestore
+@app.post("/single_project")
+async def post_project(user_id: str, project_id: str, file_name: str, file_type: str, file_size: str, file_reference: str, url_reference: str):
+    print("post_project is activated!")
+    print(f"user id in post_project backend = {user_id}")
+    print(f"project_id id in post_project backend = {project_id}")
+    file_data = {
+        "user_id": user_id,
+        "project_id": project_id,
+        "file_name": file_name,
+        "file_type": file_type,
+        "file_size": file_size,
+        "file_reference": file_reference,
+        "url_reference": url_reference
+    }
+    data = add_file_to_project(file_data)
+    print(f"data inside main file = {data}")
+    return {"data": data}
+
 
 # Delete specific project of a single user
 @app.delete("/single_project")
@@ -110,109 +132,3 @@ def signup(user: User):
     except HTTPException:
         print("Format is not right!")
     return True
-# kirolosyassa2017@gmail.com
-# 333333
-# @app.post("/login")
-# def logIn(user: User):
-#         user_data = {
-#         # "first_name": "",
-#         # "last_name": "",
-#         "email": user.email, 
-#         "password": user.password,
-#         # "role": "",
-#         }
-
-#     # try:
-#         response = log_in(email=user_data["email"], password=user_data["password"])
-#         # print(user_data)
-#         # response = add_user(user_data)
-#         # if response == "UserAlreadyExists":
-#         #     print("User already exists")
-#         #     return "UserAlreadyExists"
-#         # else:
-#         #     print(response)
-#         #     return response
-#     # except HTTPException:
-#         # print("Format is not right!")
-#         # return True
-#         print(response)
-#         return response
-
-
-# @app.get("/users")
-# def get_users():
-#     data = get_all_users()
-#     return data
-
-
-# @app.get("/user-id")
-# def get_id(email: str = None):
-#     id = get_user_id(email)
-#     return {"id": id}
-
-
-
-
-
-
-
-
-
-
-
-
-
-# class Student(BaseModel):
-#     name: str
-#     age: int
-#     year: str
-
-# class UpdateStudent(BaseModel):
-#     name: Optional[str] = None
-#     age: Optional[int] = None
-#     year: Optional[str] = None
-
-# @app.get("/get-student/{student_id}")
-# def get_student(student_id: int = Path(None, description="The Id of the Student Required", gt=0)):
-#     if student_id not in students:
-#         return {"Data":"Data Not Found!"}
-#     return students[student_id]
-
-# @app.get("/get-by-name")
-# def get_student(name: str= None):
-#     for student_id in students:
-#         if students[student_id]["name"] == name:
-#             return students[student_id]
-#     return {"Data":"Data Not Found!"}
-
-#     # if student_id in students:
-#     #     return {"Error msg": "This Student is already exist"}
-    
-#     # students[student_id] = student
-#     # return students[student_id]
-
-# @app.put("/update-student/{student_id}")
-# def update_student(student_id: int, student: UpdateStudent):
-#     pass
-#     # if student_id not in students:
-#     #     return {"Error msg": "This Student is not exist"}
-    
-#     # if student.name != None:
-#     #     students[student_id].name = student.name
-    
-#     # if student.age != None:
-#     #     students[student_id].age = student.age
-    
-#     # if student.year != None:
-#     #     students[student_id].year = student.year
-
-#     # return students[student_id]
-
-# @app.delete("/delete-student/{student_id}")
-# def delete_student(student_id: int, student: Student):
-#     pass
-#     # if student_id not in students:
-#     #     return {"Error msg": "This Student is not exist"}
-    
-#     # del students[student_id]
-#     # return {"msg": "This Student is deleted successfully"}

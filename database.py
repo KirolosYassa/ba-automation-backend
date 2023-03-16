@@ -84,6 +84,13 @@ def get_user(user_id):
     print(data)
     return data
     
+# def get_user_project_names(user_id, project_name):
+#     data = get_user(user_id)
+#     project_data = {
+#         "user_name": data["first_name"],
+#         "project_name": data["first_name"],
+#         "user_name": data["first_name"],
+#     }
     
 def get_all_collections(user_id):
     collections = db.collection('users').document(user_id).collections()
@@ -92,6 +99,24 @@ def get_all_collections(user_id):
             print(f'{doc.id} => {doc.to_dict()}')
             
 # get_all_collections(user_id='ryMMVLaEJ5NBmNswSTgL')
+
+def add_file_to_project(file_data):    
+    project_ref = firestore_client.collection("users").document(file_data["user_id"]).collection("projects").document(file_data["project_id"])
+    # Add project data to the single project.
+    project_ref.set({"files": {
+                            file_data["file_name"]:
+                                { 
+                                "name": file_data["file_name"],
+                                "type": file_data["file_type"],
+                                "size": file_data["file_size"],
+                                "file_reference": file_data["file_reference"],
+                                "url_reference": file_data["url_reference"],
+                                }
+                                }}
+                                , merge = True )
+
+    return file_data["file_reference"]
+        
 
 def add_project_to_users(user_id, project_data):
     user_ref = firestore_client.collection("users").document(user_id)
@@ -106,7 +131,7 @@ def add_project_to_users(user_id, project_data):
 
     # Add documents to the subcollection.
     attr_ref = projects.document(project_data["name"])
-    attr_ref.set({"name": project_data["name"], "description": project_data["description"]})
+    attr_ref.set({"name": project_data["name"], "description": project_data["description"]}, { merge: true })
 
     # We don't need to create the doc ref beforehand if the metadata is not needed.
     # projects.document("ram").set({"name": "ram", "value": "16", "unit": "GB"})
@@ -127,35 +152,28 @@ def get_subcollection_projects(user_id):
     return data
     
 def get_specific_project(user_id, project_id):
-    
+    user_name = get_user(user_id=user_id)
     collections = db.collection('users').document(user_id).collections()
+    # print(f"project_id = {project_id}")
     data = {}
     for collection in collections:
         for doc in collection.stream():
+            # print(f"doc.id inside database file = {doc.id}")
+            
             if doc.id == project_id:
+                print(f"doc.to_dict() inside database file = {doc.to_dict()}")
+
                 data[doc.id] = doc.to_dict()
+                data[doc.id]["user_name"] = user_name[user_id]["first_name"]
+                data[doc.id]["project_id"] = doc.id
                 break
+    # print(f"data inside database file = {data}")
     return data
     
 def delete_specific_project(user_id, project_id):
-    
     p_ref = db.collection('users').document(user_id).collection("projects").document(project_id).delete()
+    
     return p_ref
-    # collections = db.collection('users').document(user_id).collection("projects").document(project_id).get()
-    # data = {}
-    # for doc in collections:
-    #     if doc.id == project_id:
-    #         data = doc.to_dict()
-    #         doc.delete()
-    #         break
-    # for collection in collections:
-    #     print(collection)
-    #     for doc in collection.stream():
-    #         if doc.id == project_id:
-    #             data = doc.to_dict()
-    #             doc.delete()
-    #             break
-    return data
 
 def add_project_by_user_id(project_data):
     data = {
@@ -176,3 +194,20 @@ project_data = {
         "description": "hanet 5las aho", 
     }
 # add_project_by_user_id(project_data)
+
+
+    #             break
+    # return data
+    # collections = db.collection('users').document(user_id).collection("projects").document(project_id).get()
+    # data = {}
+    # for doc in collections:
+    #     if doc.id == project_id:
+    #         data = doc.to_dict()
+    #         doc.delete()
+    #         break
+    # for collection in collections:
+    #     print(collection)
+    #     for doc in collection.stream():
+    #         if doc.id == project_id:
+    #             data = doc.to_dict()
+    #             doc.delete()
