@@ -1,34 +1,55 @@
 import os
 import firebase_admin
 from firebase_admin import credentials, storage, firestore, auth
- 
+# import pyrebase
+# from pyrebase.pyrebase import storage 
+# from google.cloud import storage
 
-cred = credentials.Certificate(os.path.dirname(__file__) + "/serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+
+credential_path = os.path.dirname(__file__) + "/serviceAccountKey.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+
+
+cred = credentials.Certificate(credential_path)
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'ba-automation-5a4ae.appspot.com'
+})
 firestore_client = firestore.client()
-# auth = firebase_admin.auth()
 
+# Initialize a client
 db = firestore.client()
 
-#readdata
-# update_time, city_ref = db.collection(u'#users').add(city)
 
-# new_city_ref = db.collection('#users').document()
+async def delete_file(deleted_file):
+    print("Deleting file in database file")
 
-# # later...
-# new_city_ref.set({
-#     u'name': u'Tokyo',
-#     u'country': u'Japan'
-# })
-
-# print(f'Added document with id {new_city_ref.id}')
-
-
-def log_in(email, password):
-    response = auth.sign_in_with_email_and_password(email=email, password=password)
-    # link = auth.generate_sign_in_with_email_link(email=email, action_code_settings=None)
-    return response
+    user_id = deleted_file["user_id"]
+    project_id = deleted_file["project_id"]
+    file_name = deleted_file["file_name"]
     
+    print(f"user id in delete_file database file = {user_id}")
+    print(f"file_name in delete_file database file = {file_name}")
+    print(f"project_id id in delete_file database file = {project_id}")
+    
+    # Delete the file from Firebase Firestore
+    file_ref = db.collection('users').document(user_id).collection("projects").document(project_id).update({f"files[{file_name}]": firestore.DELETED_FIELD})
+    
+    return await file_ref
+
+def delete_specific_project(deleted_project):
+    print("Deleting project in database file")
+
+    user_id = deleted_project["user_id"]
+    project_id = deleted_project["project_id"]
+    
+    print(f"user id in delete_project database file = {user_id}")
+    print(f"project_id id in delete_project database file = {project_id}")
+
+    # First delete the project from Firebase Firestore
+    p_ref = db.collection('users').document(user_id).collection("projects").document(project_id).delete()
+    
+    return p_ref
+
 
 def get_all_users():
     docs = db.collection("users").get()
@@ -83,14 +104,7 @@ def get_user(user_id):
     data[doc.id] = doc.to_dict()
     print(data)
     return data
-    
-# def get_user_project_names(user_id, project_name):
-#     data = get_user(user_id)
-#     project_data = {
-#         "user_name": data["first_name"],
-#         "project_name": data["first_name"],
-#         "user_name": data["first_name"],
-#     }
+
     
 def get_all_collections(user_id):
     collections = db.collection('users').document(user_id).collections()
@@ -170,11 +184,6 @@ def get_specific_project(user_id, project_id):
     # print(f"data inside database file = {data}")
     return data
     
-def delete_specific_project(user_id, project_id):
-    p_ref = db.collection('users').document(user_id).collection("projects").document(project_id).delete()
-    
-    return p_ref
-
 def add_project_by_user_id(project_data):
     data = {
         "user_id": project_data["user_id"],
@@ -195,19 +204,3 @@ project_data = {
     }
 # add_project_by_user_id(project_data)
 
-
-    #             break
-    # return data
-    # collections = db.collection('users').document(user_id).collection("projects").document(project_id).get()
-    # data = {}
-    # for doc in collections:
-    #     if doc.id == project_id:
-    #         data = doc.to_dict()
-    #         doc.delete()
-    #         break
-    # for collection in collections:
-    #     print(collection)
-    #     for doc in collection.stream():
-    #         if doc.id == project_id:
-    #             data = doc.to_dict()
-    #             doc.delete()

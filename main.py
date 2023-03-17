@@ -14,12 +14,13 @@ app = FastAPI()
 origins = [
     "https://ba-automation-5a4ae.web.app",
     "http://localhost:3000",
+    "http://localhost:3000/",
     "http://127.0.0.1/3000",
 ]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    # allow_origins=origins,
+    # allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -42,6 +43,51 @@ class UploadedFiles(BaseModel):
       user_id: str
       project_: str
       files: dict
+    
+class DeletedProject(BaseModel):
+      user_id: str
+      project_id: str
+    
+class DeletedFile(BaseModel):
+      user_id: str
+      project_id: str
+      file_name: str
+
+
+# Delete specific project of a single user
+@app.delete("/single_file/")
+async def delete_file(deleted_file: DeletedFile):
+    deletedFile_data = {
+    "user_id": deleted_file.user_id,
+    "project_id":  deleted_file.project_id,
+    "file_name": deleted_file.file_name,
+    }
+    print("delete_file is activated!")
+    user_id = deletedFile_data["user_id"]
+    project_id = deletedFile_data["project_id"]
+    file_name = deletedFile_data["file_name"]
+    print(f"user id in delete_file backend = {user_id}")
+    print(f"project_id id in delete_file backend = {project_id}")
+    print(f"file_name in delete_file backend = {file_name}")
+    data = delete_file(deletedFile_data)
+    print(data)
+    return {"data": data}
+
+# Delete specific project of a single user
+@app.delete("/single_project/")
+async def delete_project(deletedProject: DeletedProject):
+    deletedProject_data = {
+    "user_id": deletedProject.user_id,
+    "project_id":  deletedProject.project_id,
+    }
+    user_id = deletedProject_data["user_id"]
+    project_id = deletedProject_data["project_id"]
+    print("delete_project is activated!")
+    print(f"user id in delete_project backend = {user_id}")
+    print(f"project_id id in delete_project backend = {project_id}")
+    data = delete_specific_project(deletedProject_data)
+    print(data)
+    return {"data": data}
 
 
 # Add project for specific user with his/her user_id
@@ -97,17 +143,6 @@ async def post_project(user_id: str, project_id: str, file_name: str, file_type:
     }
     data = add_file_to_project(file_data)
     print(f"data inside main file = {data}")
-    return {"data": data}
-
-
-# Delete specific project of a single user
-@app.delete("/single_project")
-async def delete_project(user_id: str, project_id: str):
-    print("delete_project is activated!")
-    print(f"user id in delete_project backend = {user_id}")
-    print(f"project_id id in delete_project backend = {project_id}")
-    data = delete_specific_project(user_id, project_id)
-    print(data)
     return {"data": data}
 
 

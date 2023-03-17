@@ -49,3 +49,5 @@ uvicorn==0.20.0
 wasabi==0.10.1
 watchfiles==0.18.1
 websockets==10.4
+firebase_admin==4.5.0
+pyrebase
