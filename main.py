@@ -1,6 +1,9 @@
 '''
+pip install -r requirements.txt
+
 cd .\backend\
 python -m uvicorn main:app --reload
+
 '''
 
 from typing import Optional
@@ -69,7 +72,7 @@ async def delete_file(deleted_file: DeletedFile):
     print(f"user id in delete_file backend = {user_id}")
     print(f"project_id id in delete_file backend = {project_id}")
     print(f"file_name in delete_file backend = {file_name}")
-    data = delete_file(deletedFile_data)
+    data = delete_file(deleted_file)
     print(data)
     return {"data": data}
 

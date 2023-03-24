@@ -20,7 +20,7 @@ firestore_client = firestore.client()
 db = firestore.client()
 
 
-async def delete_file(deleted_file):
+def delete_file(deleted_file):
     print("Deleting file in database file")
 
     user_id = deleted_file["user_id"]
@@ -34,7 +34,7 @@ async def delete_file(deleted_file):
     # Delete the file from Firebase Firestore
     file_ref = db.collection('users').document(user_id).collection("projects").document(project_id).update({f"files[{file_name}]": firestore.DELETED_FIELD})
     
-    return await file_ref
+    return file_ref
 
 def delete_specific_project(deleted_project):
     print("Deleting project in database file")
