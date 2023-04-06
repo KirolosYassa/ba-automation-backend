@@ -204,3 +204,10 @@ project_data = {
     }
 # add_project_by_user_id(project_data)
 
+def send_project_files_URLs(user_id, project_id):
+    project_data = get_specific_project(user_id=user_id, project_id=project_id)
+    files = [value["url_reference"] for (key,value) in project_data[project_id]["files"].items()]
+    print(f'FILES IN SEND_PROJECT_FILES = {files}')
+    return  files
+    
+print(send_project_files_URLs(user_id="HigzIsPL2vemKLC2dw8jTlTpe8V2", project_id="Ln9fVyaDv2uQyvzsPdoP"))
