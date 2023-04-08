@@ -94,6 +94,24 @@ async def delete_project(deletedProject: DeletedProject):
 
 
 # Add project for specific user with his/her user_id
+@app.post("/generate_use_case_with_file")
+async def generate_use_case_with_file(user_id: str, user_name: str, project_id: str, project_name: str, file_url_reference: str, file_name: str):
+    print("generate_use_case_with_file is activated!")
+    print(f"user id in generate_use_case_with_file backend = {user_id}")
+    print(f"project_id id in generate_use_case_with_file backend = {project_id}")
+    file_data = {
+        "user_id": user_id,
+        "user_name": user_name,
+        "project_id": project_id,
+        "project_name": project_name,
+        "file_url_reference": file_url_reference,
+        "file_name": file_name,
+    }
+    data = generate_use_case(file_data)
+    print(f"data inside main file = {data}")
+    return {"data": data}
+
+# Add project for specific user with his/her user_id
 @app.post("/addproject")
 async def add_project(project: Project):
     project_data = {
@@ -142,7 +160,8 @@ async def post_project(user_id: str, project_id: str, file_name: str, file_type:
         "file_type": file_type,
         "file_size": file_size,
         "file_reference": file_reference,
-        "url_reference": url_reference
+        "url_reference": url_reference,
+        "has_useCase_diagram": False,
     }
     data = add_file_to_project(file_data)
     print(f"data inside main file = {data}")

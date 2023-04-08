@@ -1,10 +1,8 @@
 import os
 import firebase_admin
 from firebase_admin import credentials, storage, firestore, auth
-# import pyrebase
-# from pyrebase.pyrebase import storage 
-# from google.cloud import storage
-
+from google.cloud import storage
+from google.oauth2 import service_account
 
 credential_path = os.path.dirname(__file__) + "/serviceAccountKey.json"
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
@@ -19,7 +17,62 @@ firestore_client = firestore.client()
 # Initialize a client
 db = firestore.client()
 
+def upload_blob(bucket_name, source_file_name, destination_blob_name):
+    credentials = service_account.Credentials.from_service_account_file(credential_path)
+    storage_client = storage.Client(credentials=credentials)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+    blob.upload_from_filename(source_file_name)
+    print(f"File {source_file_name} uploaded to {destination_blob_name}.")
+    print(f"URL REFERENCE = {blob.public_url}")
+    return blob.public_url
+# upload_blob(firebase_admin.storage.bucket().name, 'backend/UML/other/usecasediagram1111.png', 'images/usecasediagram1111.png')
 
+
+def save_generated_file_in_firestore(url_reference, file_data, destination_file_name):
+    project_ref = firestore_client.collection("users").document(file_data["user_id"]).collection("projects").document(file_data["project_id"])
+    # Add project data to the single project.
+    project_ref.set({"files": {
+                            file_data["file_name"]:
+                                { 
+                                 "has_useCase_diagram": True,
+                                 "diagram_url_reference": url_reference,
+                                }
+                                }}
+                                , merge = True )
+
+    return 
+
+    # project_ref = firestore_client.collection("users").document(file_data["user_id"]).collection("projects").document(file_data["project_id"])
+    # # Add project data to the single project.
+    # project_ref.set({"diagrams": {
+    #                         file_data["file_name"]:
+    #                             { 
+    #                             "name": file_data["file_name"],
+    #                             "file_reference": destination_file_name,
+    #                             "url_reference": url_reference,
+    #                             }
+    #                             }}
+    #                             , merge = True )
+    # return project_ref
+
+
+def generate_use_case(file_data):
+    data = {
+        "user_id": file_data["user_id"],
+        "user_name": file_data["user_name"],
+        "project_id": file_data["project_id"],
+        "project_name": file_data["project_name"],
+        "file_url_reference": file_data["file_url_reference"],
+        "file_name": file_data["file_name"],
+        }
+    image_reference = f"users/{data['user_name']}_{data['user_id']}/{data['project_name']}_{data['project_id']}/diagrams/useCase_diagram_{data['file_name']}.png"
+    url_reference = upload_blob(firebase_admin.storage.bucket().name, source_file_name='../backend/UML/other/usecasediagram1111.png', destination_blob_name=image_reference)
+    save_generated_file_in_firestore(url_reference=url_reference, file_data =data,destination_file_name= image_reference)
+    
+    return data
+    
+    
 def delete_file(deleted_file):
     print("Deleting file in database file")
 
@@ -125,6 +178,7 @@ def add_file_to_project(file_data):
                                 "size": file_data["file_size"],
                                 "file_reference": file_data["file_reference"],
                                 "url_reference": file_data["url_reference"],
+                                "has_useCase_diagram": file_data["has_useCase_diagram"],
                                 }
                                 }}
                                 , merge = True )
@@ -210,4 +264,8 @@ def send_project_files_URLs(user_id, project_id):
     print(f'FILES IN SEND_PROJECT_FILES = {files}')
     return  files
     
-print(send_project_files_URLs(user_id="HigzIsPL2vemKLC2dw8jTlTpe8V2", project_id="Ln9fVyaDv2uQyvzsPdoP"))
+# print(send_project_files_URLs(user_id="HigzIsPL2vemKLC2dw8jTlTpe8V2", project_id="Ln9fVyaDv2uQyvzsPdoP"))
+
+
+def upload_generated_UML_image_to_firebase():
+    pass
