@@ -114,14 +114,9 @@ async def generate_use_case_with_file(user_id: str, user_name: str, project_id: 
 # Add project for specific user with his/her user_id
 @app.post("/addproject")
 async def add_project(project: Project):
-    project_data = {
-        "user_id": project.user_id,
-        "name": project.name,
-        "description": project.description, 
-    }
     print("add_project is activated!")
     print(f"user id in add_project backend = {project.user_id}")
-    response = add_project_by_user_id(project_data)
+    response = add_single_project(project.user_id, project.name, project.description)
     print(response)
     return response
 

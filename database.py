@@ -1,21 +1,7 @@
-import os
-import firebase_admin
-from firebase_admin import credentials, storage, firestore, auth
-from google.cloud import storage
-from google.oauth2 import service_account
-
-credential_path = os.path.dirname(__file__) + "/serviceAccountKey.json"
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
-
-
-cred = credentials.Certificate(credential_path)
-firebase_admin.initialize_app(cred, {
-    'storageBucket': 'ba-automation-5a4ae.appspot.com'
-})
-firestore_client = firestore.client()
-
-# Initialize a client
-db = firestore.client()
+from databaseStructure import *
+from databaseClasses.Project import Project
+from databaseClasses.File import File
+from databaseClasses.User import User
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
     credentials = service_account.Credentials.from_service_account_file(credential_path)
@@ -42,19 +28,6 @@ def save_generated_file_in_firestore(url_reference, file_data, destination_file_
                                 , merge = True )
 
     return 
-
-    # project_ref = firestore_client.collection("users").document(file_data["user_id"]).collection("projects").document(file_data["project_id"])
-    # # Add project data to the single project.
-    # project_ref.set({"diagrams": {
-    #                         file_data["file_name"]:
-    #                             { 
-    #                             "name": file_data["file_name"],
-    #                             "file_reference": destination_file_name,
-    #                             "url_reference": url_reference,
-    #                             }
-    #                             }}
-    #                             , merge = True )
-    # return project_ref
 
 
 def generate_use_case(file_data):
@@ -104,26 +77,6 @@ def delete_specific_project(deleted_project):
     return p_ref
 
 
-def get_all_users():
-    docs = db.collection("users").get()
-
-    all_users = {}
-    for doc in docs:
-        # print(user.to_dict())
-        user = doc.to_dict()
-        # print(user)
-        user_info = {
-        "first_name": user["first_name"],
-        "last_name": user["last_name"],
-        "email": user["email"], 
-        "role": user["role"],
-        }
-        all_users[doc.id] = user_info
-        # print(user_info)
-    # for doc in docs:
-    print(all_users)
-    return all_users
-
 def add_user(user_data):
     data = {
         "first_name": user_data["first_name"],
@@ -144,29 +97,6 @@ def add_user(user_data):
     return "User Added"
 
 
-def get_user(user_id):
-    print(f"user id in get_user function = {user_id}")
-    doc = db.collection("users").document(user_id).get()
-    print(doc)
-    if doc.exists:
-        print(f'Document data: {doc.to_dict()}')
-    else:
-        print(u'No such document!')
-
-    data = {}
-    data[doc.id] = doc.to_dict()
-    print(data)
-    return data
-
-    
-def get_all_collections(user_id):
-    collections = db.collection('users').document(user_id).collections()
-    for collection in collections:
-        for doc in collection.stream():
-            print(f'{doc.id} => {doc.to_dict()}')
-            
-# get_all_collections(user_id='ryMMVLaEJ5NBmNswSTgL')
-
 def add_file_to_project(file_data):    
     project_ref = firestore_client.collection("users").document(file_data["user_id"]).collection("projects").document(file_data["project_id"])
     # Add project data to the single project.
@@ -186,86 +116,28 @@ def add_file_to_project(file_data):
     return file_data["file_reference"]
         
 
-def add_project_to_users(user_id, project_data):
-    user_ref = firestore_client.collection("users").document(user_id)
-    # user_ref.set(project_data)
-    #     # {
-    #     #     "name": "Apple Macbook Pro",
-    #     #     "brand": "Apple",
-    #     # }
-
-    # Specify the subcollection for a laptop document.
-    projects = user_ref.collection("projects")
-
-    # Add documents to the subcollection.
-    attr_ref = projects.document(project_data["name"])
-    attr_ref.set({"name": project_data["name"], "description": project_data["description"]}, { merge: true })
-
-    # We don't need to create the doc ref beforehand if the metadata is not needed.
-    # projects.document("ram").set({"name": "ram", "value": "16", "unit": "GB"})
-    
-def get_user_id(email):
-    docs = db.collection("users").where("email", "==", email).get()
-    for doc in docs:
-        user_id = doc.id
-    return user_id
-# print(get_user_id("kirolosyassa2017@gmail.com"))
-
 def get_subcollection_projects(user_id):
-    collections = db.collection('users').document(user_id).collections()
-    data = {}
-    for collection in collections:
-        for doc in collection.stream():
-            data[doc.id] = doc.to_dict()
+    projects_of_user = Project(user_id=user_id)
+    data = projects_of_user.get_multiple_projects()
     return data
     
 def get_specific_project(user_id, project_id):
-    user_name = get_user(user_id=user_id)
-    collections = db.collection('users').document(user_id).collections()
-    # print(f"project_id = {project_id}")
-    data = {}
-    for collection in collections:
-        for doc in collection.stream():
-            # print(f"doc.id inside database file = {doc.id}")
-            
-            if doc.id == project_id:
-                print(f"doc.to_dict() inside database file = {doc.to_dict()}")
-
-                data[doc.id] = doc.to_dict()
-                data[doc.id]["user_name"] = user_name[user_id]["first_name"]
-                data[doc.id]["project_id"] = doc.id
-                break
-    # print(f"data inside database file = {data}")
+    project = Project(user_id=user_id, project_id=project_id)
+    data = project.get_single_project()
     return data
     
-def add_project_by_user_id(project_data):
-    data = {
-        "user_id": project_data["user_id"],
-        "name": project_data["name"],
-        "description": project_data["description"],
-        }
-    db.collection('users').document(data["user_id"]).collection('projects').add(data)
-    # update_time, project_ref = db.collection('users').document(data["user_id"]).collection('projects').add(data)
-    # print(update_time)
-    # print(project_ref)
-    # print(project_ref)
-    return "Project Added"
+def add_single_project(user_id, project_name, description):
+    new_project = Project(user_id=user_id, project_name=project_name, description=description)
+    response = new_project.add_single_project()
+    return response
     
-project_data = {
-        "user_id": "fqQRCusgnORUEKRHAqzNOqrM8nh1",
-        "name": "First Project",
-        "description": "hanet 5las aho", 
-    }
-# add_project_by_user_id(project_data)
-
+    
 def send_project_files_URLs(user_id, project_id):
     project_data = get_specific_project(user_id=user_id, project_id=project_id)
     files = [value["url_reference"] for (key,value) in project_data[project_id]["files"].items()]
     print(f'FILES IN SEND_PROJECT_FILES = {files}')
     return  files
     
-# print(send_project_files_URLs(user_id="HigzIsPL2vemKLC2dw8jTlTpe8V2", project_id="Ln9fVyaDv2uQyvzsPdoP"))
-
 
 def upload_generated_UML_image_to_firebase():
     pass
