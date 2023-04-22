@@ -89,5 +89,17 @@ class Project:
         return p_ref
 
 
+    # def delete_single_file(self, file_name):
+    #     deleted_file = File(file_name) 
+        
+    #     print("Deleting file in database file")
+    #     print(f"user id in delete_file database file = {self.user_id}")
+    #     print(f"file_name in delete_file database file = {deleted_file.file_name}")
+    #     print(f"project_id id in delete_file database file = {self.project_id}")
+        
+    #     # Delete the file from Firebase Firestore
+    #     file_ref = db.collection('users').document(self.user_id).collection("projects").document(self.project_id).update({f"files[{deleted_file.file_name}]": firestore.DELETED_FIELD})
+        
+    #     return file_ref
 
     

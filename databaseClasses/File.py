@@ -24,10 +24,22 @@ class File:
                     "has_Class_diagram": self.has_Class_diagram,
                     }
         return file_dict
+     
         
-    def delete_single_file(self):
+    def delete_single_file(self, deleted_file):
         # needs user_id & project_id & file_name
-        pass
+        project = Project(user_id = deleted_file["user_id"],
+                        project_id = deleted_file["project_id"])
+        
+        print("Deleting file in database file")
+        print(f"user id in delete_file database file = {project.user_id}")
+        print(f"file_name in delete_file database file = {self.file_name}")
+        print(f"project_id id in delete_file database file = {project.project_id}")
+        
+        # Delete the file from Firebase Firestore
+        file_ref = db.collection('users').document(project.user_id).collection("projects").document(project.project_id).update({f"files[{self.file_name}]": firestore.DELETED_FIELD})
+        
+        return file_ref
 
     
     def generate_useCase_diagram_with_file(self):

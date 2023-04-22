@@ -47,19 +47,8 @@ def generate_use_case(file_data):
      
     
 def delete_file(deleted_file):
-    print("Deleting file in database file")
-
-    user_id = deleted_file["user_id"]
-    project_id = deleted_file["project_id"]
-    file_name = deleted_file["file_name"]
-    
-    print(f"user id in delete_file database file = {user_id}")
-    print(f"file_name in delete_file database file = {file_name}")
-    print(f"project_id id in delete_file database file = {project_id}")
-    
-    # Delete the file from Firebase Firestore
-    file_ref = db.collection('users').document(user_id).collection("projects").document(project_id).update({f"files[{file_name}]": firestore.DELETED_FIELD})
-    
+    file_wanted_to_be_deleted = File(file_name = deleted_file["file_name"],)
+    file_ref = file_wanted_to_be_deleted.delete_single_file(deleted_file)
     return file_ref
 
 
