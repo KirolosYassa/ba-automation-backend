@@ -13,5 +13,23 @@ class File:
         self.has_Class_diagram = has_Class_diagram
         
         
+    def get_file_data(self):
+        file_dict = { 
+                    "name": self.file_name,
+                    "type": self.file_type,
+                    "size": self.file_size,
+                    "file_reference": self.file_reference,
+                    "url_reference": self.url_reference,
+                    "has_useCase_diagram": self.has_useCase_diagram,
+                    "has_Class_diagram": self.has_Class_diagram,
+                    }
+        return file_dict
+        
+    def delete_single_file(self):
+        # needs user_id & project_id & file_name
+        pass
+
     
-    
+    def generate_useCase_diagram_with_file(self):
+        # needs user_id & user_name & project_id & project_name & file_url_reference & file_name
+        pass

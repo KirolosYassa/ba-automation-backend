@@ -156,7 +156,6 @@ async def post_project(user_id: str, project_id: str, file_name: str, file_type:
         "file_size": file_size,
         "file_reference": file_reference,
         "url_reference": url_reference,
-        "has_useCase_diagram": False,
     }
     data = add_file_to_project(file_data)
     print(f"data inside main file = {data}")

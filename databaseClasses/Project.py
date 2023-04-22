@@ -13,6 +13,19 @@ class Project:
         self.description = description
         self.files = files
 
+
+    def add_file_to_project(self, file_data):
+        new_file = File(file_name = file_data["file_name"],
+                        file_reference = file_data["file_reference"],
+                        file_size = file_data["file_size"],
+                        file_type = file_data["file_type"],
+                        url_reference = file_data["url_reference"])
+            
+        project_ref = firestore_client.collection("users").document(self.user_id).collection("projects").document(self.project_id)
+        # Add new File data to the single project.
+        project_ref.set({"files": { new_file.file_name: new_file.get_file_data() } }, merge = True )
+        return new_file.file_reference
+           
     
     def get_multiple_projects(self):
         # needs user_id only
@@ -65,6 +78,16 @@ class Project:
     
     def delete_single_project(self):
         # needs user_id & project_id
-        pass
+        print("Deleting project in database file")
+        
+        print(f"user id in delete_project database file = {self.user_id}")
+        print(f"project_id id in delete_project database file = {self.project_id}")
+
+        # First delete the project from Firebase Firestore
+        p_ref = db.collection('users').document(self.user_id).collection("projects").document(self.project_id).delete()
+        
+        return p_ref
+
+
 
     
