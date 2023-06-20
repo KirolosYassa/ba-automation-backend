@@ -57,6 +57,16 @@ class DeletedFile(BaseModel):
       file_name: str
 
 
+@app.get("/login")
+async def login(user_id: str):
+    print("login is activated!")
+    print(f"user id in login backend = {user_id}")
+    data = get_user(user_id=user_id)
+    print(data)
+    return {"data": data}
+
+
+
 # Delete specific project of a single user
 @app.delete("/single_file/")
 async def delete_file(deleted_file: DeletedFile):

@@ -104,3 +104,12 @@ def send_project_files_URLs(user_id, project_id):
 
 def upload_generated_UML_image_to_firebase():
     pass
+
+
+def get_user(user_id):
+    user = User(user_id=user_id)
+    user_data = user.get_user_data()
+    user = Project(user_id=user_id)
+    projects = user.get_multiple_projects() 
+    user_data["projects"] = projects
+    return user_data
