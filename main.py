@@ -1,10 +1,10 @@
-'''
+"""
 pip install -r requirements.txt
 
 cd .\backend\
 python -m uvicorn main:app --reload
 
-'''
+"""
 
 from typing import Optional
 from fastapi import FastAPI, Path, HTTPException
@@ -26,8 +26,8 @@ app.add_middleware(
     # allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
-    )
+    allow_headers=["*"],
+)
 
 
 class User(BaseModel):
@@ -36,25 +36,29 @@ class User(BaseModel):
     email: str
     role: str
     password: str
-    
+
+
 class Project(BaseModel):
     user_id: str
     name: str
     description: str
-    
+
+
 class UploadedFiles(BaseModel):
-      user_id: str
-      project_: str
-      files: dict
-    
+    user_id: str
+    project_: str
+    files: dict
+
+
 class DeletedProject(BaseModel):
-      user_id: str
-      project_id: str
-    
+    user_id: str
+    project_id: str
+
+
 class DeletedFile(BaseModel):
-      user_id: str
-      project_id: str
-      file_name: str
+    user_id: str
+    project_id: str
+    file_name: str
 
 
 @app.get("/login")
@@ -66,32 +70,12 @@ async def login(user_id: str):
     return {"data": data}
 
 
-
-# Delete specific project of a single user
-@app.delete("/single_file/")
-async def delete_file(deleted_file: DeletedFile):
-    deletedFile_data = {
-    "user_id": deleted_file.user_id,
-    "project_id":  deleted_file.project_id,
-    "file_name": deleted_file.file_name,
-    }
-    print("delete_file is activated!")
-    user_id = deletedFile_data["user_id"]
-    project_id = deletedFile_data["project_id"]
-    file_name = deletedFile_data["file_name"]
-    print(f"user id in delete_file backend = {user_id}")
-    print(f"project_id id in delete_file backend = {project_id}")
-    print(f"file_name in delete_file backend = {file_name}")
-    data = delete_file(deleted_file)
-    print(data)
-    return {"data": data}
-
 # Delete specific project of a single user
 @app.delete("/single_project/")
 async def delete_project(deletedProject: DeletedProject):
     deletedProject_data = {
-    "user_id": deletedProject.user_id,
-    "project_id":  deletedProject.project_id,
+        "user_id": deletedProject.user_id,
+        "project_id": deletedProject.project_id,
     }
     user_id = deletedProject_data["user_id"]
     project_id = deletedProject_data["project_id"]
@@ -103,9 +87,36 @@ async def delete_project(deletedProject: DeletedProject):
     return {"data": data}
 
 
+# Delete specific project of a single user
+@app.delete("/single_file/")
+async def delete_file(deleted_file: DeletedFile):
+    deletedFile_data = {
+        "user_id": deleted_file.user_id,
+        "project_id": deleted_file.project_id,
+        "file_name": deleted_file.file_name,
+    }
+    print("delete_file is activated!")
+    user_id = deletedFile_data["user_id"]
+    project_id = deletedFile_data["project_id"]
+    file_name = deletedFile_data["file_name"]
+    print(f"user id in delete_file backend = {user_id}")
+    print(f"project_id id in delete_file backend = {project_id}")
+    print(f"file_name in delete_file backend = {file_name}")
+    data = deleteFile(deletedFile_data)
+    print(data)
+    return {"data": data}
+
+
 # Add project for specific user with his/her user_id
 @app.post("/generate_use_case_with_file")
-async def generate_use_case_with_file(user_id: str, user_name: str, project_id: str, project_name: str, file_url_reference: str, file_name: str):
+async def generate_use_case_with_file(
+    user_id: str,
+    user_name: str,
+    project_id: str,
+    project_name: str,
+    file_url_reference: str,
+    file_name: str,
+):
     print("generate_use_case_with_file is activated!")
     print(f"user id in generate_use_case_with_file backend = {user_id}")
     print(f"project_id id in generate_use_case_with_file backend = {project_id}")
@@ -120,6 +131,7 @@ async def generate_use_case_with_file(user_id: str, user_name: str, project_id: 
     data = generate_use_case(file_data)
     print(f"data inside main file = {data}")
     return {"data": data}
+
 
 # Add project for specific user with his/her user_id
 @app.post("/addproject")
@@ -154,7 +166,15 @@ async def get_project(user_id: str, project_id: str):
 
 # Post to Single Page to save files_data_uploaded to cloud firestore
 @app.post("/single_project")
-async def post_project(user_id: str, project_id: str, file_name: str, file_type: str, file_size: str, file_reference: str, url_reference: str):
+async def post_project(
+    user_id: str,
+    project_id: str,
+    file_name: str,
+    file_type: str,
+    file_size: str,
+    file_reference: str,
+    url_reference: str,
+):
     print("post_project is activated!")
     print(f"user id in post_project backend = {user_id}")
     print(f"project_id id in post_project backend = {project_id}")
@@ -178,7 +198,7 @@ def signup(user: User):
         user_data = {
             "first_name": user.first_name,
             "last_name": user.last_name,
-            "email": user.email, 
+            "email": user.email,
             "password": user.password,
             "role": user.role,
         }

@@ -3,6 +3,7 @@ from databaseClasses.Project import Project
 from databaseClasses.File import File
 from databaseClasses.User import User
 
+
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
     credentials = service_account.Credentials.from_service_account_file(credential_path)
     storage_client = storage.Client(credentials=credentials)
@@ -12,22 +13,32 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
     print(f"URL REFERENCE = {blob.public_url}")
     return blob.public_url
+
+
 # upload_blob(firebase_admin.storage.bucket().name, 'backend/UML/other/usecasediagram1111.png', 'images/usecasediagram1111.png')
 
 
 def save_generated_file_in_firestore(url_reference, file_data, destination_file_name):
-    project_ref = firestore_client.collection("users").document(file_data["user_id"]).collection("projects").document(file_data["project_id"])
+    project_ref = (
+        firestore_client.collection("users")
+        .document(file_data["user_id"])
+        .collection("projects")
+        .document(file_data["project_id"])
+    )
     # Add project data to the single project.
-    project_ref.set({"files": {
-                            file_data["file_name"]:
-                                { 
-                                 "has_useCase_diagram": True,
-                                 "diagram_url_reference": url_reference,
-                                }
-                                }}
-                                , merge = True )
+    project_ref.set(
+        {
+            "files": {
+                file_data["file_name"]: {
+                    "has_useCase_diagram": True,
+                    "diagram_url_reference": url_reference,
+                }
+            }
+        },
+        merge=True,
+    )
 
-    return 
+    return
 
 
 def generate_use_case(file_data):
@@ -38,39 +49,52 @@ def generate_use_case(file_data):
         "project_name": file_data["project_name"],
         "file_url_reference": file_data["file_url_reference"],
         "file_name": file_data["file_name"],
-        }
+    }
     image_reference = f"users/{data['user_name']}_{data['user_id']}/{data['project_name']}_{data['project_id']}/diagrams/useCase_diagram_{data['file_name']}.png"
-    url_reference = upload_blob(firebase_admin.storage.bucket().name, source_file_name='../backend/UML/other/usecasediagram1111.png', destination_blob_name=image_reference)
-    save_generated_file_in_firestore(url_reference=url_reference, file_data =data,destination_file_name= image_reference)
-    
+    url_reference = upload_blob(
+        firebase_admin.storage.bucket().name,
+        source_file_name="../backend/UML/other/usecasediagram1111.png",
+        destination_blob_name=image_reference,
+    )
+    save_generated_file_in_firestore(
+        url_reference=url_reference,
+        file_data=data,
+        destination_file_name=image_reference,
+    )
+
     return data
-     
-    
-def delete_file(deleted_file):
-    file_wanted_to_be_deleted = File(file_name = deleted_file["file_name"],)
+
+
+def deleteFile(deleted_file: object):
+    file_name_wanted_to_be_deleted = deleted_file["file_name"]
+    file_wanted_to_be_deleted = File(
+        file_name=file_name_wanted_to_be_deleted,
+    )
     file_ref = file_wanted_to_be_deleted.delete_single_file(deleted_file)
     return file_ref
 
 
 def delete_specific_project(deleted_project):
-    project = Project(user_id=deleted_project["user_id"],
-                      project_id=deleted_project["project_id"])
-    time_deletion_of_project = project.delete_single_project()    
+    project = Project(
+        user_id=deleted_project["user_id"], project_id=deleted_project["project_id"]
+    )
+    time_deletion_of_project = project.delete_single_project()
     return time_deletion_of_project
 
 
-def add_file_to_project(file_data): 
-    project = Project(user_id = file_data["user_id"],
-                      project_id = file_data["project_id"])   
+def add_file_to_project(file_data):
+    project = Project(user_id=file_data["user_id"], project_id=file_data["project_id"])
     file_reference = project.add_file_to_project(file_data)
     return file_reference
 
 
 def add_user(user_data):
-    new_user = User(email = user_data["email"],
-                    first_name = user_data["first_name"],
-                    last_name = user_data["last_name"], 
-                    role = user_data["role"])
+    new_user = User(
+        email=user_data["email"],
+        first_name=user_data["first_name"],
+        last_name=user_data["last_name"],
+        role=user_data["role"],
+    )
     response_on_creating_user = new_user.add_user()
     return response_on_creating_user
 
@@ -79,28 +103,31 @@ def get_subcollection_projects(user_id):
     projects_of_user = Project(user_id=user_id)
     data = projects_of_user.get_multiple_projects()
     return data
-    
+
+
 def get_specific_project(user_id, project_id):
-    project = Project(user_id=user_id,
-                      project_id=project_id)
+    project = Project(user_id=user_id, project_id=project_id)
     data = project.get_single_project()
     return data
-    
+
+
 def add_single_project(user_id, project_name, description):
-    new_project = Project(user_id=user_id,
-                          project_name=project_name,
-                          description=description)
+    new_project = Project(
+        user_id=user_id, project_name=project_name, description=description
+    )
     response = new_project.add_single_project()
     return response
-    
-    
+
+
 def send_project_files_URLs(user_id, project_id):
-    project_data = get_specific_project(user_id=user_id,
-                                        project_id=project_id)
-    files = [value["url_reference"] for (key,value) in project_data[project_id]["files"].items()]
-    print(f'FILES IN SEND_PROJECT_FILES = {files}')
-    return  files
-    
+    project_data = get_specific_project(user_id=user_id, project_id=project_id)
+    files = [
+        value["url_reference"]
+        for (key, value) in project_data[project_id]["files"].items()
+    ]
+    print(f"FILES IN SEND_PROJECT_FILES = {files}")
+    return files
+
 
 def upload_generated_UML_image_to_firebase():
     pass
@@ -110,6 +137,6 @@ def get_user(user_id):
     user = User(user_id=user_id)
     user_data = user.get_user_data()
     user = Project(user_id=user_id)
-    projects = user.get_multiple_projects() 
+    projects = user.get_multiple_projects()
     user_data["projects"] = projects
     return user_data

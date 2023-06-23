@@ -35,7 +35,7 @@ class Project:
             for doc in collection.stream():
                 data[doc.id] = doc.to_dict()
         return data
-        pass
+
 
     
     def get_single_project(self):
