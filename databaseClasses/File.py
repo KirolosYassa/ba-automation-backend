@@ -13,6 +13,8 @@ class File:
         url_reference="",
         has_useCase_diagram=False,
         has_Class_diagram=False,
+        usecase_diagram_url_reference=None,
+        class_diagram_url_reference=None,
     ):
         self.file_name = file_name
         self.file_reference = file_reference
@@ -21,6 +23,8 @@ class File:
         self.url_reference = url_reference
         self.has_useCase_diagram = has_useCase_diagram
         self.has_Class_diagram = has_Class_diagram
+        self.usecase_diagram_url_reference = usecase_diagram_url_reference
+        self.class_diagram_url_reference = class_diagram_url_reference
 
     def get_file_data(self):
         file_dict = {
@@ -31,6 +35,8 @@ class File:
             "url_reference": self.url_reference,
             "has_useCase_diagram": self.has_useCase_diagram,
             "has_Class_diagram": self.has_Class_diagram,
+            "usecase_diagram_url_reference": self.usecase_diagram_url_reference,
+            "class_diagram_url_reference": self.class_diagram_url_reference,
         }
         return file_dict
 

@@ -1,7 +1,9 @@
+import time
 from databaseStructure import *
 from databaseClasses.Project import Project
 from databaseClasses.File import File
 from databaseClasses.User import User
+import UML_classdiagramNew.mainUseCase as generate_usecase_diagram
 
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
@@ -10,38 +12,56 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_filename(source_file_name)
+    blob.make_public()
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
     print(f"URL REFERENCE = {blob.public_url}")
+    print(f"blob._get_download_url = {blob._get_download_url}")
     return blob.public_url
 
 
 # upload_blob(firebase_admin.storage.bucket().name, 'backend/UML/other/usecasediagram1111.png', 'images/usecasediagram1111.png')
 
 
-def save_generated_file_in_firestore(url_reference, file_data, destination_file_name):
+def save_generated_file_in_firestore(
+    url_reference, file_data, destination_file_name, diagram_type
+):
     project_ref = (
         firestore_client.collection("users")
         .document(file_data["user_id"])
         .collection("projects")
         .document(file_data["project_id"])
     )
-    # Add project data to the single project.
-    project_ref.set(
-        {
-            "files": {
-                file_data["file_name"]: {
-                    "has_useCase_diagram": True,
-                    "diagram_url_reference": url_reference,
+    if diagram_type == "use_case_diagram":
+        # Add project data to the single project.
+        project_ref.set(
+            {
+                "files": {
+                    file_data["file_name"]: {
+                        "has_useCase_diagram": True,
+                        "usecase_diagram_url_reference": url_reference,
+                    }
                 }
-            }
-        },
-        merge=True,
-    )
+            },
+            merge=True,
+        )
+    elif diagram_type == "class_diagram":
+        # Add project data to the single project.
+        project_ref.set(
+            {
+                "files": {
+                    file_data["file_name"]: {
+                        "has_Class_diagram": True,
+                        "class_diagram_url_reference": url_reference,
+                    }
+                }
+            },
+            merge=True,
+        )
 
     return
 
 
-def generate_use_case(file_data):
+def generate_diagram(file_data, diagram_type):
     data = {
         "user_id": file_data["user_id"],
         "user_name": file_data["user_name"],
@@ -50,19 +70,33 @@ def generate_use_case(file_data):
         "file_url_reference": file_data["file_url_reference"],
         "file_name": file_data["file_name"],
     }
-    image_reference = f"users/{data['user_name']}_{data['user_id']}/{data['project_name']}_{data['project_id']}/diagrams/useCase_diagram_{data['file_name']}.png"
+    image_reference = f"users/{data['user_name']}_{data['user_id']}/{data['project_name']}_{data['project_id']}/diagrams/{diagram_type}_{data['file_name']}.png"
+    diagram_file_pathname = processing_on_file(data, diagram_type)
+    print(f"diagram_file_pathname = {diagram_file_pathname}")
     url_reference = upload_blob(
         firebase_admin.storage.bucket().name,
-        source_file_name="../backend/UML/other/usecasediagram1111.png",
+        source_file_name=diagram_file_pathname,
+        # source_file_name="../backend/UML/other/usecasediagram1111.png",
         destination_blob_name=image_reference,
     )
     save_generated_file_in_firestore(
         url_reference=url_reference,
         file_data=data,
         destination_file_name=image_reference,
+        diagram_type=diagram_type,
     )
 
     return data
+
+
+def processing_on_file(file_data, diagram_type):
+    file_path = generate_usecase_diagram.generate_usecase_diagram(
+        url_reference=file_data["file_url_reference"],
+        file_name=file_data["file_name"],
+        diagram_type=diagram_type,
+    )
+    time.sleep(6000)
+    return file_path
 
 
 def deleteFile(deleted_file: object):

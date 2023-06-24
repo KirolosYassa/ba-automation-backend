@@ -128,7 +128,33 @@ async def generate_use_case_with_file(
         "file_url_reference": file_url_reference,
         "file_name": file_name,
     }
-    data = generate_use_case(file_data)
+    data = generate_diagram(file_data, diagram_type="use_case_diagram")
+    print(f"data inside main file = {data}")
+    return {"data": data}
+
+
+# Add project for specific user with his/her user_id
+@app.post("/generate_class_with_file")
+async def generate_class_with_file(
+    user_id: str,
+    user_name: str,
+    project_id: str,
+    project_name: str,
+    file_url_reference: str,
+    file_name: str,
+):
+    print("generate_class_with_file is activated!")
+    print(f"user id in generate_class_with_file backend = {user_id}")
+    print(f"project_id id in generate_class_with_file backend = {project_id}")
+    file_data = {
+        "user_id": user_id,
+        "user_name": user_name,
+        "project_id": project_id,
+        "project_name": project_name,
+        "file_url_reference": file_url_reference,
+        "file_name": file_name,
+    }
+    data = generate_diagram(file_data, diagram_type="class_diagram")
     print(f"data inside main file = {data}")
     return {"data": data}
 
