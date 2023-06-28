@@ -125,6 +125,7 @@ def add_file_to_project(file_data):
 def add_user(user_data):
     new_user = User(
         email=user_data["email"],
+        password=user_data["password"],
         first_name=user_data["first_name"],
         last_name=user_data["last_name"],
         role=user_data["role"],

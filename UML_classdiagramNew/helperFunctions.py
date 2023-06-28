@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 import requests
-from IPython.core.display import SVG, display, HTML
+#from IPython.core.display import SVG, display, HTML
 from spacy.language import Language
 import spacy
 from spacy import displacy
@@ -123,7 +123,7 @@ def getAllNouns(sentence):
 
     return nouns
 
-
+"""
 def displayRender(sentence):
     doc = nlp(sentence)
     svg = displacy.render(doc, style="dep", jupyter=False)
@@ -132,7 +132,7 @@ def displayRender(sentence):
     # output_path = Path (  file_name )
     # output_path.open ( "w", encoding="utf-8" ).write ( svg )
 
-
+"""
 def isExists(x, list):
     if x in list:
         return True

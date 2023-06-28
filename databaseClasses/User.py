@@ -5,9 +5,10 @@ from database import *
 class User:
                 
     
-    def __init__(self, user_id="", email="", first_name="", last_name="", role="", projects=[]):
+    def __init__(self, user_id="", email="", password="", first_name="", last_name="", role="", projects=[]):
         self.user_id = user_id
         self.email = email
+        self.password = password
         self.first_name = first_name
         self.last_name = last_name
         self.role = role
@@ -20,6 +21,7 @@ class User:
         "first_name": self.first_name,
         "last_name": self.last_name,
         "email": self.email,
+        "password": self.password,
         "role": self.role,
         }
         # Add the user to the AuthenticationManager
