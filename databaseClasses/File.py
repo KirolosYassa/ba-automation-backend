@@ -61,23 +61,30 @@ class File:
         )
 
         # Delete the file from Firebase Firestore
-        doc = file_ref.get()
-        files = doc.to_dict().get("files", {})
-        files_copy = files.copy()  # create a copy of the dictionary
-
-        print(f"files = {files}")
-        for key, value in files_copy.items():
-            print(key)
-            print(value)
-            if value["name"] == self.file_name:
-                del files[key]
-
-        # Write the updated array back to the document
-        file_ref.update(
+        # doc = file_ref.get()
+        file_ref.set(
             {
-                "files": files,
+                "files": {},
             },
+            merge=True,
         )
+
+        # files = doc.to_dict().get("files", {})
+        # files_copy = files.copy()  # create a copy of the dictionary
+
+        # print(f"files = {files}")
+        # for key, value in files_copy.items():
+        #     print(key)
+        #     print(value)
+        #     if value["name"] == self.file_name:
+        #         del files[key]
+
+        # # Write the updated array back to the document
+        # file_ref.update(
+        #     {
+        #         "files": {files},
+        #     },
+        # )
         return file_ref
 
     def generate_useCase_diagram_with_file(self):
