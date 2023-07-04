@@ -6,7 +6,7 @@ from database import *
 class File:
     def __init__(
         self,
-        file_name,
+        file_name="",
         file_reference="",
         file_size="",
         file_type="",
@@ -83,3 +83,9 @@ class File:
     def generate_useCase_diagram_with_file(self):
         # needs user_id & user_name & project_id & project_name & file_url_reference & file_name
         pass
+
+    def get_content_text(self):
+        print(f"self.url_reference = {self.url_reference}")
+        response = requests.get(self.url_reference)
+        print(f"response.text { response.text}")
+        return response.text

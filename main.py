@@ -239,3 +239,10 @@ def signup(user: User):
     except HTTPException:
         print("Format is not right!")
     return True
+
+
+@app.get("/text_content")
+def get_text_content(url: str):
+    text_data = getTextContent(url)
+    # print(f"text_data = {text_data}")
+    return text_data

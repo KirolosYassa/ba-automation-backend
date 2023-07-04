@@ -7,8 +7,7 @@ import UML_classdiagramNew.mainUseCase as generate_usecase_diagram
 
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
-    credentials = service_account.Credentials.from_service_account_file(
-        credential_path)
+    credentials = service_account.Credentials.from_service_account_file(credential_path)
     storage_client = storage.Client(credentials=credentials)
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
@@ -155,7 +154,6 @@ def add_single_project(user_id, project_name, description):
     return response
 
 
-
 def send_project_files_URLs(user_id, project_id):
     project_data = get_specific_project(user_id=user_id, project_id=project_id)
     files = [
@@ -177,3 +175,8 @@ def get_user(user_id):
     projects = user.get_multiple_projects()
     user_data["projects"] = projects
     return user_data
+
+
+def getTextContent(url=""):
+    new_file = File(url_reference=url)
+    return new_file.get_content_text()

@@ -3,6 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, storage, firestore, auth
 from google.cloud import storage
 from google.oauth2 import service_account
+import requests
 
 
 credential_path = os.path.dirname(__file__) + "/serviceAccountKey.json"
