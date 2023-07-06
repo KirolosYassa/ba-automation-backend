@@ -54,5 +54,4 @@ spacy
 en_core_web_lg
 requests
 nltk
-pprint
 IPython

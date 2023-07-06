@@ -69,22 +69,6 @@ class File:
             merge=True,
         )
 
-        # files = doc.to_dict().get("files", {})
-        # files_copy = files.copy()  # create a copy of the dictionary
-
-        # print(f"files = {files}")
-        # for key, value in files_copy.items():
-        #     print(key)
-        #     print(value)
-        #     if value["name"] == self.file_name:
-        #         del files[key]
-
-        # # Write the updated array back to the document
-        # file_ref.update(
-        #     {
-        #         "files": {files},
-        #     },
-        # )
         return file_ref
 
     def generate_useCase_diagram_with_file(self):
@@ -92,7 +76,7 @@ class File:
         pass
 
     def get_content_text(self):
-        print(f"self.url_reference = {self.url_reference}")
+        # print(f"self.url_reference = {self.url_reference}")
         response = requests.get(self.url_reference)
-        print(f"response.text { response.text}")
+        # print(f"response.text { response.text}")
         return response.text

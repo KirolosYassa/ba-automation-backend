@@ -1,9 +1,6 @@
-import os
-
-
 class PlantUml:
     def __init__(self, fileName):
-        self.file = open(fileName)
+        self.file = open(fileName, "a", encoding="utf-8")
         self.file.write(f""" @startuml \n""")
 
     def addCustomMessage(self, msg):
@@ -29,6 +26,9 @@ class UseCaseModel(PlantUml):
 
     def addUseCasetoActor(self, actorName, useCaseName):
         self.file.write(f""" :{actorName}: --> ({useCaseName})\n""")
+
+    def addUseCasetoActorLeftSide(self, actorName, useCaseName):
+        self.file.write(f""" :{actorName}: -left-> ({useCaseName})\n""")
 
     def addUseCase2toUseCase1(self, usecase1, usecase2):
         self.file.write(f""" ({usecase1}) .> ({usecase2}) : include \n""")
@@ -87,8 +87,8 @@ class ClassModel(PlantUml):
     def addBinaryRelation(self, Class1, Class2):
         self.file.write(f""" {Class1} -- {Class2} \n""")
 
-    def addRealisationRelation(self, Class1, Class2):
-        self.file.write(f""" {Class1} <|.. {Class2} \n""")
+    def addExtensionRelation(self, Class1, Class2):
+        self.file.write(f""" {Class1} <|-- {Class2} \n""")
 
     def addAssociationRelation(self, Class1, Class2):
         self.file.write(f""" {Class1} --> {Class2} \n""")
@@ -110,8 +110,6 @@ class ClassModel(PlantUml):
         self.file.write(f""" ({Class1}, {Class2}) .. {AssoClass} \n""")
 
     #####
-    def addCustomMessage(self, msg):
-        super().addCustomMessage(msg)
 
     def closeFile(self):
         super().closeFile()

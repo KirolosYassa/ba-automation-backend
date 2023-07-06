@@ -1,8 +1,11 @@
 import time
+import sys
 from databaseStructure import *
 from databaseClasses.Project import Project
 from databaseClasses.File import File
 from databaseClasses.User import User
+
+sys.path.append("./UML-classdiagramNew/mainUseCase.py")
 import UML_classdiagramNew.mainUseCase as generate_usecase_diagram
 
 
@@ -67,11 +70,22 @@ def generate_diagram(file_data, diagram_type):
         "user_name": file_data["user_name"],
         "project_id": file_data["project_id"],
         "project_name": file_data["project_name"],
-        "file_url_reference": file_data["file_url_reference"],
+        "file_text": file_data["file_text"],
         "file_name": file_data["file_name"],
     }
+    # file_url_reference = data["file_url_reference"]
     image_reference = f"users/{data['user_name']}_{data['user_id']}/{data['project_name']}_{data['project_id']}/diagrams/{diagram_type}_{data['file_name']}.png"
+    # print("----------------------------------------------------------------")
+    # print(f"file_url_reference in Database = {file_url_reference}")
+    # print("----------------------------------------------------------------")
+
+    # file_text = File(url_reference=file_url_reference)
+    # data["file_text"] = file_text.get_content_text()
+
+    # After processing then should be saved at firestore and firebase storage
     diagram_file_pathname = processing_on_file(data, diagram_type)
+    time.sleep(6)
+
     print(f"diagram_file_pathname = {diagram_file_pathname}")
     url_reference = upload_blob(
         firebase_admin.storage.bucket().name,
@@ -79,6 +93,9 @@ def generate_diagram(file_data, diagram_type):
         # source_file_name="../backend/UML/other/usecasediagram1111.png",
         destination_blob_name=image_reference,
     )
+    print("----------------------------------------------------------------")
+    print(f"url_reference = {url_reference}")
+    print("----------------------------------------------------------------")
     save_generated_file_in_firestore(
         url_reference=url_reference,
         file_data=data,
@@ -91,11 +108,11 @@ def generate_diagram(file_data, diagram_type):
 
 def processing_on_file(file_data, diagram_type):
     file_path = generate_usecase_diagram.generate_usecase_diagram(
-        url_reference=file_data["file_url_reference"],
+        file_text=file_data["file_text"],
         file_name=file_data["file_name"],
         diagram_type=diagram_type,
     )
-    time.sleep(6000)
+    time.sleep(6)
     return file_path
 
 
