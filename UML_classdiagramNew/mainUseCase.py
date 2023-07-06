@@ -67,13 +67,21 @@ def generate_usecase_diagram(
     file_name = file_name.replace(".txt", "")
 
     if diagram_type == "use_case_diagram":
-        # filename = f"other/use_case_{file_name}_{id}.txt"
-        filename = f"D:\\Graduation project\\BA Automation Project\\ba-automation\\backend\\UML_classdiagramNew\\other\\use_case_{file_name}_{id}.txt"
+        filename = f"other/use_case_{file_name}_{id}.txt"
+        dir = os.getcwd()
+        filename = r"{}\UML_classdiagramNew\other\use_case_{}_{}.txt".format(
+            dir, file_name, id
+        )
+        print(f"filename = {filename}")
+        # filename = f"{os.getcwd()}\\other\\use_case_{file_name}_{id}.txt"
+
         # filename2 = f"other/use_case_{file_name}_{id}.png"
         # filename2 = f"D:/Graduation project/BA Automation Project/ba-automation/backend/UML_classdiagramNew/other/use_case_{file_name}_{id}.png"
         # filename2 = f"D:\\Graduation project\\BA Automation Project\\ba-automation\\backend\\UML_classdiagramNew\\other\\use_case_{file_name}_{id}.png"
         # filename2 = f"./UML_classdiagrmaNew/other/use_case_{file_name}_{id}.png"
-        filename2 = f"./other/use_case_{file_name}_{id}.png"
+        filename2 = r"{}\UML_classdiagramNew\other\use_case_{}_{}.png".format(
+            dir, file_name, id
+        )
     elif diagram_type == "class_diagram":
         filename = f"D:\\Graduation project\\BA Automation Project\\ba-automation\\backend\\UML_classdiagramNew\\other\\class_diagram_{file_name}_{id}.txt"
         filename2 = f"D:\\Graduation project\\BA Automation Project\\ba-automation\\backend\\UML_classdiagramNew\\other\\class_diagram_{file_name}_{id}.png"
@@ -89,8 +97,8 @@ def generate_usecase_diagram(
         os.remove(filename2)
     else:
         print("The filename2 does not exist")
-
-    # os.system("pip install plantuml")
+    print(f"os.getcwd() = {os.getcwd()}")
+    os.system("pip install plantuml")
     usecasemodel = plantUML.UseCaseModel(filename)
     usecasemodel.addCustomMessage("left to right direction")
 

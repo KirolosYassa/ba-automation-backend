@@ -1,6 +1,6 @@
 class PlantUml:
     def __init__(self, fileName):
-        self.file = open(fileName, "a", encoding="utf-8")
+        self.file = open(fileName, "w", encoding="utf-8")
         self.file.write(f""" @startuml \n""")
 
     def addCustomMessage(self, msg):
