@@ -1,7 +1,0 @@
-As a Customer ,I want to login to my account using card and PIN code so that I can perform the transactions.
-As a Customer ,I want to  check the balance of my bank account so that I can perform transactions.
-As a Customer ,I want to  deposit cash in my bank account through ATM so that I may save my time and perform transactions later.
-As a Customer ,I want to deposit check in my bank account through ATM so that I may save my time and perform transactions later.
-As a Customer I want to withdraw cash from my bank account through ATM so that I may save my time.
-As a Customer, I want to transfer money from my account to another bank account through ATM so that I may save my time.
-As a Customer,I want to transfer money from my account to another bank account through ATM so that I may save my time.

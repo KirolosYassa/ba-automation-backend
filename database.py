@@ -7,6 +7,7 @@ from databaseClasses.User import User
 
 sys.path.append("./UML-classdiagramNew/mainUseCase.py")
 import UML_classdiagramNew.mainUseCase as generate_usecase_diagram
+import UML_classdiagramNew.mainClass as generate_class_diagram
 
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
@@ -73,24 +74,17 @@ def generate_diagram(file_data, diagram_type):
         "file_text": file_data["file_text"],
         "file_name": file_data["file_name"],
     }
-    # file_url_reference = data["file_url_reference"]
-    image_reference = f"users/{data['user_name']}_{data['user_id']}/{data['project_name']}_{data['project_id']}/diagrams/{diagram_type}_{data['file_name']}.png"
-    # print("----------------------------------------------------------------")
-    # print(f"file_url_reference in Database = {file_url_reference}")
-    # print("----------------------------------------------------------------")
 
-    # file_text = File(url_reference=file_url_reference)
-    # data["file_text"] = file_text.get_content_text()
+    image_reference = f"users/{data['user_name']}_{data['user_id']}/{data['project_name']}_{data['project_id']}/diagrams/{diagram_type}_{data['file_name']}.png"
 
     # After processing then should be saved at firestore and firebase storage
     diagram_file_pathname = processing_on_file(data, diagram_type)
-    time.sleep(6)
+    # time.sleep(6)
 
     print(f"diagram_file_pathname = {diagram_file_pathname}")
     url_reference = upload_blob(
         firebase_admin.storage.bucket().name,
         source_file_name=diagram_file_pathname,
-        # source_file_name="../backend/UML/other/usecasediagram1111.png",
         destination_blob_name=image_reference,
     )
     print("----------------------------------------------------------------")
@@ -107,12 +101,17 @@ def generate_diagram(file_data, diagram_type):
 
 
 def processing_on_file(file_data, diagram_type):
-    file_path = generate_usecase_diagram.generate_usecase_diagram(
-        file_text=file_data["file_text"],
-        file_name=file_data["file_name"],
-        diagram_type=diagram_type,
-    )
-    time.sleep(6)
+    if diagram_type == "use_case_diagram":
+        file_path = generate_usecase_diagram.generate_usecase_diagram(
+            file_text=file_data["file_text"],
+            file_name=file_data["file_name"],
+        )
+    elif diagram_type == "class_diagram":
+        file_path = generate_class_diagram.generate_class_diagram(
+            file_text=file_data["file_text"],
+            file_name=file_data["file_name"],
+        )
+    # time.sleep(6)
     return file_path
 
 

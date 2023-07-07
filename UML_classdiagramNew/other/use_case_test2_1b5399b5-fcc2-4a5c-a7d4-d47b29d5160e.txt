@@ -1,0 +1,65 @@
+ @startuml 
+ left to right direction 
+ usecase "see borrows" 
+ :customer: --> (see borrows)
+ usecase "see availability of books" 
+ :customer: --> (see availability of books)
+ usecase "reserve book" 
+ :customer: --> (reserve book)
+ usecase "delete recomendation" 
+ :customer: --> (delete recomendation)
+ usecase "want create my borrows   As librarian" 
+ :customer: --> (want create my borrows   As librarian)
+ usecase "delete borrows" 
+ :customer: --> (delete borrows)
+ usecase "update borrows" 
+ :customer: --> (update borrows)
+ usecase "make recomendation" 
+ :customer: --> (make recomendation)
+ usecase "add books" 
+ :librarian: --> (add books)
+ usecase "add books to book list" 
+ :librarian: --> (add books to book list)
+ usecase "add books to library" 
+ :librarian: --> (add books to library)
+ usecase "want be to add members   As librarian of books" 
+ :librarian: --> (want be to add members   As librarian of books)
+ usecase "update plans" 
+ :librarian: --> (update plans)
+ usecase "update status of book" 
+ :librarian: --> (update status of book)
+ usecase "block members" 
+ :librarian: --> (block members)
+ usecase "calculate fee for delayed book returns" 
+ :librarian: --> (calculate fee for delayed book returns)
+ usecase "chat with users" 
+ :librarian: --> (chat with users)
+ usecase "check dates of books" 
+ :librarian: --> (check dates of books)
+ usecase "create list" 
+ :librarian: -left-> (create list)
+ usecase "create information about borrowed books" 
+ :librarian: -left-> (create information about borrowed books)
+ usecase "create pages for book information" 
+ :librarian: -left-> (create pages for book information)
+ usecase "delete books from library" 
+ :librarian: -left-> (delete books from library)
+ usecase "delete information about borrowed books" 
+ :librarian: -left-> (delete information about borrowed books)
+ usecase "delete members" 
+ :librarian: -left-> (delete members)
+ usecase "detect books" 
+ :librarian: -left-> (detect books)
+ usecase "edit subscription" 
+ :librarian: -left-> (edit subscription)
+ usecase "edit list" 
+ :librarian: -left-> (edit list)
+ usecase "edit details about books and their locations" 
+ :librarian: -left-> (edit details about books and their locations)
+ usecase "edit list of borrowed books" 
+ :librarian: -left-> (edit list of borrowed books)
+ usecase "see returns" 
+ :librarian: -left-> (see returns)
+ usecase "update list" 
+ :librarian: -left-> (update list)
+ @enduml 

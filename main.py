@@ -1,5 +1,7 @@
 """
+cd .\backend\
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 
 cd .\backend\
 python -m uvicorn main:app --reload
@@ -122,7 +124,7 @@ async def generate_use_case_with_file(
     print(f"project_id id in generate_use_case_with_file backend = {project_id}")
     text_data = getTextContent(file_url_reference)
 
-    time.sleep(4)
+    # time.sleep(4)
 
     file_data = {
         "user_id": user_id,
@@ -150,12 +152,16 @@ async def generate_class_with_file(
     print("generate_class_with_file is activated!")
     print(f"user id in generate_class_with_file backend = {user_id}")
     print(f"project_id id in generate_class_with_file backend = {project_id}")
+    text_data = getTextContent(file_url_reference)
+
+    # time.sleep(4)
+
     file_data = {
         "user_id": user_id,
         "user_name": user_name,
         "project_id": project_id,
         "project_name": project_name,
-        "file_url_reference": file_url_reference,
+        "file_text": text_data,
         "file_name": file_name,
     }
     data = generate_diagram(file_data, diagram_type="class_diagram")

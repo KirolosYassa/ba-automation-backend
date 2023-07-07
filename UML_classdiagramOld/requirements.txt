@@ -1,6 +1,0 @@
-spacy
-requests
-nltk
-pprint
-multilabelmodel
-IPython

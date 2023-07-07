@@ -1,6 +1,6 @@
 
 
-class ClassEntity ():
+class ClassEntity:
 
     def __init__(self,className):
         self.className=className

@@ -6,7 +6,8 @@ from google.oauth2 import service_account
 import requests
 
 
-credential_path = os.path.dirname(__file__) + "/serviceAccountKey.json"
+print(f"os.getcwd() at databaseStructure.py = {os.getcwd()}")
+credential_path = os.getcwd() + "/serviceAccountKey.json"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
 
 

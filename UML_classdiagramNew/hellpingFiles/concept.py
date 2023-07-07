@@ -1,8 +1,8 @@
 import re
 
-import algorithm
-import helperFunctions
-from UserStory import UserStory
+import UML_classdiagramNew.algorithm as algorithm
+import UML_classdiagramNew.helperFunctions as helperFunctions
+from UML_classdiagramNew.UserStory import UserStory
 conceptList = [ ]
 noun_phrases = [ ]
 

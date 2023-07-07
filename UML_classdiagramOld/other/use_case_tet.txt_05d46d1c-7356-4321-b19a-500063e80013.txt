@@ -1,5 +1,0 @@
- @startuml 
- left to right direction 
- usecase "   " 
- :{    " error: --> (   )
- @enduml 

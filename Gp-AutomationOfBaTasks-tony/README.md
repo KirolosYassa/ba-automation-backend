@@ -1,2 +1,0 @@
-# Gp-AutomationOfBaTasks
-Graduation project.
