@@ -13,6 +13,28 @@ class Project:
         self.description = description
         self.files = files
 
+    def edit_project(
+        self,
+    ):
+        print("Data at Database")
+        print(self.project_id, self.project_name, self.description)
+        project_ref = (
+            firestore_client.collection("users")
+            .document(self.user_id)
+            .collection("projects")
+            .document(self.project_id)
+        )
+
+        project_ref.set(
+            {
+                "project_name": self.project_name,
+                "description": self.description,
+            },
+            merge=True,
+        )
+
+        return project_ref
+
     def add_file_to_project(self, file_data):
         new_file = File(
             file_name=file_data["file_name"],

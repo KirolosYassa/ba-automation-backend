@@ -241,8 +241,8 @@ def findGeneralization():
             wordshyponyms[concept] = hyponyms
 
             # wordes having same meaning
-    print("synonyms of ", conceptList[0], wordsSynonyms[conceptList[0]])
-    print("hypo of ", conceptList[0], wordshyponyms[conceptList[0]])
+    # print("synonyms of ", conceptList[0], wordsSynonyms[conceptList[0]])
+    # print("hypo of ", conceptList[0], wordshyponyms[conceptList[0]])
 
     # words having is a relationship
     for outIndex, ct1 in enumerate(conceptList):

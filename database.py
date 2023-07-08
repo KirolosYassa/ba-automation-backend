@@ -196,3 +196,19 @@ def get_user(user_id):
 def getTextContent(url=""):
     new_file = File(url_reference=url)
     return new_file.get_content_text()
+
+
+def editProject(
+    user_id="",
+    project_id="",
+    project_name="",
+    description="",
+):
+    project = Project(
+        user_id=user_id,
+        project_id=project_id,
+        project_name=project_name,
+        description=description,
+    )
+    project_data = project.edit_project()
+    return project_data

@@ -1,0 +1,30 @@
+ @startuml 
+ class creation_date 
+ class customer 
+customer : + phone
+customer : + email
+customer : + address
+customer : + first_name
+customer : + last_name
+ class identifier 
+ class inventory 
+inventory : + inventory
+inventory : + products
+ class order 
+ class payment 
+payment : + Payment
+payment : + identifier
+payment : + date
+payment : + total_price
+payment : + details
+ class system 
+ system o-- customer 
+ system o-- inventory 
+ customer o-- shopping_cart 
+ order o-- product 
+ order *-- payment 
+customer : + login
+customer : + register
+Order : + carry products
+Order : + hold
+ @enduml 

@@ -63,12 +63,28 @@ class DeletedFile(BaseModel):
     file_name: str
 
 
-@app.get("/login")
-async def login(user_id: str):
+@app.patch("/edit_project")
+async def edit_project(
+    user_id: str, project_id: str, project_name: str, description: str
+):
+    print("edit_project is activated!")
+    data = editProject(
+        user_id=user_id,
+        project_id=project_id,
+        project_name=project_name,
+        description=description,
+    )
+    return {"data": data}
+
+
+@app.get("/user_profile")
+async def user_profile(user_id: str):
     print("login is activated!")
     print(f"user id in login backend = {user_id}")
     data = get_user(user_id=user_id)
-    print(data)
+    print(
+        f"------------------------------\ndata at get_user in main.py file = {data}\n----------------"
+    )
     return {"data": data}
 
 
